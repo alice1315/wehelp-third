@@ -8,10 +8,13 @@
     </head>
 
     <body onload="init();">
-        <h1>發表一篇圖文</h1>
-        <h3>文字內容 <input type="text" placeholder="選擇一張圖片後送出"/></h3>
-        <h3>圖片檔案 <input type="file" accept="image/*" /></h3>     
-        <button id="upload">送出</button>
+        <form method="POST" enctype="multipart/form-data">  
+            <h1>發表一篇圖文</h1>
+            <h3>文字內容 <input type="text" placeholder="選擇一張圖片後送出"/></h3>
+            <h3>圖片檔案 <input type="file" accept="image/*" /></h3>     
+            <button id="upload">送出</button>
+        </form>
+        
         <hr/>
         <div id="content"></div>
 

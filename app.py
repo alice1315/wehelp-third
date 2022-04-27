@@ -1,11 +1,13 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, make_response
 
-from database.database import Database
+from models.database import Database
+from models.s3 import S3
 from config import MYSQL_CONFIG
 
 app = Flask(__name__, static_folder = "static", static_url_path = "/")
 
 db = Database(MYSQL_CONFIG)
+s3 = S3()
 
 @app.route("/")
 def index():
@@ -13,7 +15,16 @@ def index():
 
 @app.route("/api/messages", methods = ["POST"])
 def upload_messages():
-    data = request.get_json()
+    # Get request data
+    file = request.files["file"]
+    message = request.form["message"]
+
+    filename = file.filename
+    if filename == "":
+        return "No file"
+    else:
+        s3.upload_file(file.read(), filename)
+        return "ok"
 
 @app.route("/api/messages", methods = ["GET"])
 def get_messages():
@@ -25,5 +36,5 @@ def get_messages():
 
     return jsonify(result_dict)
 
-
-app.run(port = "3000")
+if __name__ == '__main__':
+    app.run(port = "3000")

@@ -8,8 +8,8 @@ from mysql.connector import errorcode
 
 load_dotenv()
 MYSQL_CONFIG = {
-    'user': os.getenv("user"), 
-    'password': os.getenv("password"),
+    'user': os.getenv("rds_user"), 
+    'password': os.getenv("rds_password"),
     'host': 'wehelp.czi2w7686f8d.us-east-1.rds.amazonaws.com',
 }
 

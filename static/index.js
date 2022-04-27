@@ -1,21 +1,21 @@
 var data;
 
-var text;
+var message;
 var file;
 
-async function init(){
-    // getData();
-    // upload();
-    await testGetData();
-    testRender();
+function init(){
+    upload();
+    // await getData();
+    // testRender();
 }
 
-async function testGetData(){
-    await fetch("/api/messages", {method: "GET"})
+async function getData(fetchOptions){
+    await fetch("/api/messages", fetchOptions)
     .then((resp) => {
         return resp.json();
     }).then((result) => {
-        data = result["data"];
+        // data = result["data"];
+        console.log(result);
     })
 }
 
@@ -36,18 +36,13 @@ function testRender(){
     }
 }
 
-function getData(){
-    let text = document.querySelector("input[type=text]").value;
-    let file = document.querySelector("input[type=file]")
-}
-
 function render(){
     let content = document.getElementById("content");
     let textDiv = document.createElement("div");
     let picDiv = document.createElement("img");
     let hr = document.createElement("hr");
 
-    textDiv.textContent = text;
+    textDiv.textContent = message;
     picDiv.textContent = file;
 
     content.appendChild(textDiv);
@@ -58,10 +53,23 @@ function render(){
 
 function upload(){
     let btn = document.getElementById("upload");
-    btn.addEventListener("click", function(){
-        text = document.querySelector("input[type=text]").value;
-        file = document.querySelector("input[type=file]").files.name;
-        render();
-    })
+    btn.addEventListener("click", handle_upload)
+}
+
+async function handle_upload(event){
+    event.preventDefault()
+    message = document.querySelector("input[type=text]").value;
+    file = document.querySelector("input[type=file]").files[0];
+
+    let formData = new FormData()
+    formData.append("message", message)
+    formData.append("file", file)
+
+    let fetchOptions = {
+        method: "POST",
+        body: formData,
+    }
+
+    await getData(fetchOptions);
 }
 
