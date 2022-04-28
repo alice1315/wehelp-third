@@ -16,7 +16,7 @@ def index():
 
 @app.route("/api/messages", methods = ["GET"])
 def get_messages():
-    sql = ("SELECT message, image_url FROM messages ORDER BY id DESC")
+    sql = ("SELECT message, image_url FROM messages ORDER BY id")
     sql_data = ()
     result = db.execute_sql(sql, sql_data)
 
@@ -45,7 +45,9 @@ def upload_messages():
         sql_data = (message, file_url)
         db.execute_sql(sql, sql_data, commit=True)
 
-        return jsonify({"ok": True})
+        result_dict = {"data": {"message": message, "image_url": file_url}}
+
+        return jsonify(result_dict)
 
 if __name__ == '__main__':
     app.run(host = "0.0.0.0", port = "3000")

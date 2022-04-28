@@ -1,8 +1,9 @@
 var data;
+var content = document.getElementById("content");
 
 async function init(){
     await getData({method: "GET"});
-    render();
+    renderAll();
     upload();
 }
 
@@ -15,26 +16,30 @@ async function getData(fetchOptions){
     })
 }
 
-function render(){
-    let content = document.getElementById("content");
+function render(message, image_url){
+    let container = document.createElement("div");
+    let textDiv = document.createElement("div");
+    let picDiv = document.createElement("img");
+    let hr = document.createElement("hr");
 
+    textDiv.textContent = message;
+    picDiv.src = image_url;
+
+    content.insertBefore(container, content.firstChild);
+    container.appendChild(textDiv);
+    container.appendChild(picDiv);
+    container.appendChild(hr);
+}
+
+function renderAll(){
     for(let i = 0; i < data.length; i++){
-        let textDiv = document.createElement("div");
-        let picDiv = document.createElement("img");
-        let hr = document.createElement("hr");
-
-        textDiv.textContent = data[i]["message"];
-        picDiv.src = data[i]["image_url"];
-
-        content.appendChild(textDiv);
-        content.appendChild(picDiv);
-        content.appendChild(hr);
+        render(data[i]["message"], data[i]["image_url"]);
     }
 }
 
 function upload(){
     let btn = document.getElementById("upload");
-    btn.addEventListener("click", handle_upload)
+    btn.addEventListener("click", handle_upload);
 }
 
 async function handle_upload(event){
@@ -53,10 +58,10 @@ async function handle_upload(event){
         }
 
         await getData(fetchOptions);
-        location.reload();
+
+        render(data["message"], data["image_url"]);
 
     } else{
         console.log("No data");
     }
 }
-
