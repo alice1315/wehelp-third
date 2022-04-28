@@ -1,12 +1,9 @@
 var data;
 
-var message;
-var file;
-
-function init(){
+async function init(){
+    await getData({method: "GET"});
+    render();
     upload();
-    // await getData();
-    // testRender();
 }
 
 async function getData(fetchOptions){
@@ -14,41 +11,25 @@ async function getData(fetchOptions){
     .then((resp) => {
         return resp.json();
     }).then((result) => {
-        // data = result["data"];
-        console.log(result);
+        data = result["data"];
     })
 }
 
-function testRender(){
+function render(){
     let content = document.getElementById("content");
 
     for(let i = 0; i < data.length; i++){
         let textDiv = document.createElement("div");
-        let picDiv = document.createElement("div");
+        let picDiv = document.createElement("img");
         let hr = document.createElement("hr");
 
         textDiv.textContent = data[i]["message"];
-        picDiv.textContent = data[i]["image_url"];
+        picDiv.src = data[i]["image_url"];
 
         content.appendChild(textDiv);
         content.appendChild(picDiv);
         content.appendChild(hr);
     }
-}
-
-function render(){
-    let content = document.getElementById("content");
-    let textDiv = document.createElement("div");
-    let picDiv = document.createElement("img");
-    let hr = document.createElement("hr");
-
-    textDiv.textContent = message;
-    picDiv.textContent = file;
-
-    content.appendChild(textDiv);
-    content.appendChild(picDiv);
-    content.appendChild(hr);
-    
 }
 
 function upload(){
@@ -58,18 +39,24 @@ function upload(){
 
 async function handle_upload(event){
     event.preventDefault()
-    message = document.querySelector("input[type=text]").value;
-    file = document.querySelector("input[type=file]").files[0];
+    let message = document.querySelector("input[type=text]").value;
+    let file = document.querySelector("input[type=file]").files[0];
 
-    let formData = new FormData()
-    formData.append("message", message)
-    formData.append("file", file)
+    if(message && file){
+        let formData = new FormData()
+        formData.append("message", message)
+        formData.append("file", file)
 
-    let fetchOptions = {
-        method: "POST",
-        body: formData,
+        let fetchOptions = {
+            method: "POST",
+            body: formData,
+        }
+
+        await getData(fetchOptions);
+        location.reload();
+
+    } else{
+        console.log("No data");
     }
-
-    await getData(fetchOptions);
 }
 

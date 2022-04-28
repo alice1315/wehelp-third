@@ -10,7 +10,7 @@ class Database:
         try:
             cnxpool = pooling.MySQLConnectionPool(
                 pool_name = "cnxpool",
-                pool_size = 5,
+                pool_size = 3,
                 **self.config
             )
         except mysql.connector.Error as err:

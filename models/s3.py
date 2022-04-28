@@ -18,15 +18,11 @@ class S3():
         )
         return client
 
-    def get_objects(self):
-        for obj in self.client.Bucket('alice1315').objects.all():
-            print(obj)
-
-    def upload_file(self, file, file_name):
-        upload_file_response = self.client.put_object(
+    def upload_file(self, file, filename):
+        response = self.client.put_object(
             Body = file,
             Bucket = 'alice1315',
-            Key = 'wehelp/' + file_name,
+            Key = 'wehelp/' + filename,
         )
 
-        return upload_file_response
+        return response

@@ -13,18 +13,6 @@ s3 = S3()
 def index():
     return render_template("index.html")
 
-@app.route("/api/messages", methods = ["POST"])
-def upload_messages():
-    # Get request data
-    file = request.files["file"]
-    message = request.form["message"]
-
-    filename = file.filename
-    if filename == "":
-        return "No file"
-    else:
-        s3.upload_file(file.read(), filename)
-        return "ok"
 
 @app.route("/api/messages", methods = ["GET"])
 def get_messages():
@@ -36,5 +24,28 @@ def get_messages():
 
     return jsonify(result_dict)
 
+
+@app.route("/api/messages", methods = ["POST"])
+def upload_messages():
+    # Get request data
+    message = request.form["message"]
+    file = request.files["file"]
+    filename = file.filename
+
+    if (not message or not file):
+        return make_response(jsonify({"error": True, "message": "No data"}), 400)
+
+    else:
+        # Upload image
+        s3.upload_file(file.read(), filename)
+        file_url = "https://dhobt9qjfs77v.cloudfront.net/wehelp/" + filename
+
+        # Insert data into rds
+        sql = ("INSERT INTO messages (message, image_url) VALUES (%s, %s)")
+        sql_data = (message, file_url)
+        db.execute_sql(sql, sql_data, commit=True)
+
+        return jsonify({"ok": True})
+
 if __name__ == '__main__':
-    app.run(port = "3000")
+    app.run(host = "0.0.0.0", port = "3000")
