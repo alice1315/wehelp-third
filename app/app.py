@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, jsonify, make_response
 
 from models.database import Database
 from models.s3 import S3
-from config import MYSQL_CONFIG
+from app.config import MYSQL_CONFIG
 
 app = Flask(__name__, static_folder = "static", static_url_path = "/")
 
