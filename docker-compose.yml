@@ -4,8 +4,6 @@ services:
   flask:
     build: ./app
     container_name: flask
-    ports:
-      - "3000:3000"
     networks:
       - wehelp_third_network
 
@@ -15,8 +13,8 @@ services:
     depends_on:
       - flask
     ports:
-      - "80:80"
-      - "443:443"
+      - 80:80
+      - 443:443
     networks:
       - wehelp_third_network
 
